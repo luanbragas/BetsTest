@@ -9,7 +9,7 @@
     "dev": "npm run start:dev",
     "start": "node dist/main",
     "start:dev": "npm run build:client && node --watch -r ts-node/register src/main.ts",
-    "lint": "tsc --noEmit && tsc -p tsconfig.client.json --noEmit"
+    "lint": "tsc --noEmit && tsc -p tsconfig.client.json --noEmit && tsc -p tsconfig.api.json --noEmit"
   },
   "dependencies": {
     "@nestjs/common": "^11.1.19",
@@ -21,6 +21,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "clsx": "^2.1.1",
+    "express": "^5.2.1",
     "lucide-react": "^1.8.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
@@ -29,6 +30,7 @@
     "tailwind-merge": "^3.5.0"
   },
   "devDependencies": {
+    "@types/express": "^5.0.6",
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",

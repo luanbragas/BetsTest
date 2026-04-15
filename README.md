@@ -44,6 +44,23 @@ O Nest tenta abrir em `http://localhost:3000`. Se a porta estiver ocupada, ele s
 - `npm run start`: roda a build do Nest em `dist`
 - `npm run lint`: valida TypeScript do backend e do frontend TSX
 
+## Deploy na Vercel
+
+O projeto usa `vercel.json` para:
+
+- compilar o React/Vite para `public`
+- servir a SPA pelo `index.html`
+- enviar `/api/*` para a funcao serverless do Nest em `api/index.ts`
+
+No painel da Vercel, configure as Environment Variables:
+
+```env
+SUPABASE_URL=https://seu-projeto.supabase.co
+SUPABASE_ANON_KEY=sua-chave-anon
+```
+
+Depois faca um novo deploy. O endpoint `/api/health` deve retornar `supabaseConfigured: true`.
+
 ## Estrutura
 
 - `src/client/src/pages/AuthPage.tsx`: pagina de login, criacao de conta e recuperacao
@@ -55,6 +72,8 @@ O Nest tenta abrir em `http://localhost:3000`. Se a porta estiver ocupada, ele s
 - `src/client/src/pages/app/PerformancePage.tsx`: analise de desempenho
 - `src/client/src/components/ui`: componentes base estilo shadcn
 - `src/client/src/components/bets`: componentes reutilizaveis de apostas
+- `api/index.ts`: adaptador serverless do Nest para a Vercel
+- `vercel.json`: rotas e output do deploy na Vercel
 - `src/auth`: endpoints de autenticacao via Supabase Auth
 - `src/bets`: CRUD de apostas e parser de linguagem natural
 - `src/supabase`: cliente Supabase configurado pelo `.env`
