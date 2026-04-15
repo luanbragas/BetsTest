@@ -59,7 +59,7 @@ export function AppLayout({ activePage, userName, onPageChange, onLogout, childr
         </div>
       </aside>
 
-      <main className="mx-auto min-h-screen w-full max-w-7xl px-4 py-6 sm:px-6 md:px-10 md:py-9">{children}</main>
+      <main className="mx-auto min-h-screen w-full min-w-0 max-w-7xl px-4 py-6 sm:px-6 md:px-10 md:py-9">{children}</main>
 
       <nav className="fixed inset-x-0 bottom-0 z-50 grid grid-cols-5 border-t border-white/10 bg-[#0b111f]/95 px-2 py-2 backdrop-blur md:hidden">
         {navItems.map((item) => {
@@ -72,7 +72,7 @@ export function AppLayout({ activePage, userName, onPageChange, onLogout, childr
               type="button"
               onClick={() => onPageChange(item.page)}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className="h-5 w-5 shrink-0" />
               <span className="max-w-full truncate">{item.label.replace("Nova ", "")}</span>
             </button>
           );

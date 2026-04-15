@@ -88,9 +88,9 @@ export function BetForm({ editingBet, onCancel, onSubmit }: Props) {
           </label>
         </div>
 
-        <div className="rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black">
+        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black">
           <span className="text-slate-500">Resultado previsto</span>
-          <strong className={`ml-3 text-lg ${result >= 0 ? "text-gain" : "text-danger"}`}>{formatMoney(result)}</strong>
+          <strong className={`break-words text-lg ${result >= 0 ? "text-gain" : "text-danger"}`}>{formatMoney(result)}</strong>
         </div>
 
         <label><span>Observacoes</span><Textarea value={form.notes} onChange={(event) => update("notes", event.target.value)} rows={3} placeholder="Odd, estrategia, campeonato..." /></label>

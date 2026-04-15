@@ -35,23 +35,23 @@ export function OperationsTable({
   const rows = bets.slice((currentPage - 1) * pageSize, currentPage * pageSize);
 
   return (
-    <Card className="overflow-hidden">
+    <Card className="min-w-0 overflow-hidden">
       {(onImport || onExport) && (
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 p-4">
-          <div>
+          <div className="min-w-0">
             <p className="font-display text-sm font-black uppercase text-slate-500">Ultimas operacoes</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex w-full gap-2 sm:w-auto">
             {onImport && (
-              <label className="ghost-button inline-flex cursor-pointer items-center gap-2">
-                <FileUp className="h-4 w-4" />
+              <label className="ghost-button inline-flex flex-1 cursor-pointer items-center justify-center gap-2 sm:flex-none">
+                <FileUp className="h-4 w-4 shrink-0" />
                 Importar
                 <input className="hidden" type="file" accept=".csv,text/csv" onChange={onImport} />
               </label>
             )}
             {onExport && (
-              <Button variant="ghost" type="button" onClick={onExport}>
-                <FileDown className="h-4 w-4" />
+              <Button className="flex-1 sm:flex-none" variant="ghost" type="button" onClick={onExport}>
+                <FileDown className="h-4 w-4 shrink-0" />
                 Exportar
               </Button>
             )}
@@ -59,7 +59,7 @@ export function OperationsTable({
         </div>
       )}
 
-      <div className="hidden overflow-x-auto md:block">
+        <div className="hidden overflow-x-auto md:block">
         <table className="w-full min-w-[860px] border-collapse text-left">
           <thead className="border-b border-white/10 text-xs font-black uppercase text-slate-500">
             <tr>
@@ -107,17 +107,17 @@ export function OperationsTable({
         {rows.map((bet) => {
           const result = getBetResult(bet);
           return (
-            <article className="rounded-lg border border-white/10 bg-white/[0.03] p-4" key={bet.id}>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-black text-slate-100">{bet.platform}</h3>
-                  <p className="text-xs text-slate-500">{bet.category} - {formatDate(bet.date)} - {bet.time}</p>
+            <article className="min-w-0 overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-4" key={bet.id}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="break-words font-black text-slate-100">{bet.platform}</h3>
+                  <p className="break-words text-xs text-slate-500">{bet.category} - {formatDate(bet.date)} - {bet.time}</p>
                 </div>
-                <strong className={result >= 0 ? "text-gain" : "text-danger"}>{formatMoney(result)}</strong>
+                <strong className={`max-w-full break-words text-right ${result >= 0 ? "text-gain" : "text-danger"}`}>{formatMoney(result)}</strong>
               </div>
               <div className="mt-4 grid grid-cols-2 gap-2 text-sm">
-                <span className="rounded-lg bg-black/20 p-2 text-slate-400">Investido<br /><b className="text-slate-100">{formatMoney(bet.stake)}</b></span>
-                <span className="rounded-lg bg-black/20 p-2 text-slate-400">Final<br /><b className="text-slate-100">{formatMoney(bet.returnValue)}</b></span>
+                <span className="min-w-0 rounded-lg bg-black/20 p-2 text-slate-400">Investido<br /><b className="break-words text-slate-100">{formatMoney(bet.stake)}</b></span>
+                <span className="min-w-0 rounded-lg bg-black/20 p-2 text-slate-400">Final<br /><b className="break-words text-slate-100">{formatMoney(bet.returnValue)}</b></span>
               </div>
               {(onEdit || onDelete || onToggle) && (
                 <div className="mt-3 flex flex-wrap gap-2">
@@ -131,7 +131,7 @@ export function OperationsTable({
         })}
       </div>
 
-      <div className="flex items-center justify-between gap-3 border-t border-white/10 p-4 text-sm font-bold text-slate-500">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-white/10 p-4 text-sm font-bold text-slate-500">
         <span>Pagina {currentPage} de {totalPages}</span>
         <div className="flex gap-2">
           <Button variant="ghost" type="button" disabled={currentPage <= 1} onClick={() => onPageChange(Math.max(1, currentPage - 1))}>Anterior</Button>

@@ -26,16 +26,16 @@ export function MetricStrip({ totals, count, variant = "overview" }: Props) {
       ];
 
   return (
-    <section className={`grid gap-3 ${variant === "performance" ? "sm:grid-cols-2 xl:grid-cols-4" : "sm:grid-cols-2 xl:grid-cols-5"}`}>
+    <section className={`grid min-w-0 gap-3 ${variant === "performance" ? "sm:grid-cols-2 xl:grid-cols-4" : "sm:grid-cols-2 xl:grid-cols-5"}`}>
       {cards.map((card) => {
         const Icon = card.icon;
         return (
-          <Card className="min-h-28 p-5" key={card.label}>
+          <Card className="min-h-28 min-w-0 p-5" key={card.label}>
             <div className="flex items-start justify-between gap-3">
-              <span className="font-display text-xs font-black uppercase text-slate-500">{card.label}</span>
-              <Icon className={`h-5 w-5 ${card.color}`} />
+              <span className="min-w-0 font-display text-xs font-black uppercase text-slate-500">{card.label}</span>
+              <Icon className={`h-5 w-5 shrink-0 ${card.color}`} />
             </div>
-            <strong className={`mt-4 block text-3xl font-black ${card.color}`}>{card.value}</strong>
+            <strong className={`mt-4 block break-words text-2xl font-black sm:text-3xl ${card.color}`}>{card.value}</strong>
             {card.label === "Operacoes" && <small className="text-sm font-bold text-neon">{formatPercent(totals.hitRate)} aproveitamento</small>}
           </Card>
         );

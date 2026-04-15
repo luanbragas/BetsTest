@@ -95,13 +95,13 @@ export function PerformanceChart({ bets }: Props) {
         <div className="grid gap-3 p-3 md:hidden">
           {!platformRows.length && <p className="py-8 text-center text-sm text-slate-500">Sem dados neste periodo.</p>}
           {platformRows.map((row) => (
-            <article className="rounded-lg border border-white/10 bg-white/[0.03] p-4" key={row.platform}>
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <h3 className="font-black">{row.platform}</h3>
-                  <p className="text-xs text-slate-500">{row.count} operacoes - {formatPercent(row.hitRate)} win rate</p>
+            <article className="min-w-0 overflow-hidden rounded-lg border border-white/10 bg-white/[0.03] p-4" key={row.platform}>
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div className="min-w-0">
+                  <h3 className="break-words font-black">{row.platform}</h3>
+                  <p className="break-words text-xs text-slate-500">{row.count} operacoes - {formatPercent(row.hitRate)} win rate</p>
                 </div>
-                <strong className={row.net >= 0 ? "text-gain" : "text-danger"}>{formatMoney(row.net)}</strong>
+                <strong className={`max-w-full break-words text-right ${row.net >= 0 ? "text-gain" : "text-danger"}`}>{formatMoney(row.net)}</strong>
               </div>
             </article>
           ))}

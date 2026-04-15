@@ -16,7 +16,7 @@ export function FilterBar({ filters, platforms = [], categories = [], onChange, 
   const update = (patch: Partial<FilterState>) => onChange({ ...filters, ...patch });
 
   return (
-    <section className={`grid gap-3 ${compact ? "grid-cols-2 sm:flex" : "sm:grid-cols-2 lg:flex"}`}>
+    <section className={`grid w-full min-w-0 gap-3 ${compact ? "grid-cols-1 sm:flex sm:flex-wrap" : "grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-wrap"}`}>
       <SegmentedPeriod value={filters.period} onChange={(period) => update({ period })} />
 
       {filters.period === "custom" && (
@@ -26,7 +26,7 @@ export function FilterBar({ filters, platforms = [], categories = [], onChange, 
         </>
       )}
 
-      <div className="min-w-48">
+      <div className="min-w-0 sm:min-w-48">
         <Select value={filters.platform} onValueChange={(platform) => update({ platform })}>
           <SelectTrigger><SelectValue placeholder="Todas as Plataformas" /></SelectTrigger>
           <SelectContent>
@@ -37,7 +37,7 @@ export function FilterBar({ filters, platforms = [], categories = [], onChange, 
       </div>
 
       {categories.length > 0 && (
-        <div className="min-w-44">
+        <div className="min-w-0 sm:min-w-44">
           <Select value={filters.category} onValueChange={(category) => update({ category })}>
             <SelectTrigger><SelectValue placeholder="Todas Categorias" /></SelectTrigger>
             <SelectContent>
@@ -48,7 +48,7 @@ export function FilterBar({ filters, platforms = [], categories = [], onChange, 
         </div>
       )}
 
-      <Button className="min-w-24" variant="ghost" type="button" onClick={() => onChange(defaultFilters())}>Limpar</Button>
+      <Button className="w-full min-w-0 sm:w-auto sm:min-w-24" variant="ghost" type="button" onClick={() => onChange(defaultFilters())}>Limpar</Button>
     </section>
   );
 }
@@ -62,10 +62,10 @@ function SegmentedPeriod({ value, onChange }: { value: Period; onChange: (value:
   ];
 
   return (
-    <div className="col-span-2 grid grid-cols-4 gap-2 sm:col-span-1 sm:flex">
+    <div className="grid min-w-0 grid-cols-4 gap-1 sm:flex sm:gap-2">
       {items.map((item) => (
         <button
-          className={`min-h-11 rounded-lg border px-4 text-sm font-bold ${value === item.value ? "border-gold/35 bg-gold/10 text-gold" : "border-transparent bg-white/[0.04] text-slate-400"}`}
+          className={`min-h-11 min-w-0 rounded-lg border px-2 text-xs font-bold sm:px-4 sm:text-sm ${value === item.value ? "border-gold/35 bg-gold/10 text-gold" : "border-transparent bg-white/[0.04] text-slate-400"}`}
           key={item.value}
           type="button"
           onClick={() => onChange(item.value)}

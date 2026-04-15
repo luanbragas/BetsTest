@@ -13,14 +13,14 @@ export const SelectTrigger = forwardRef<
   <SelectPrimitive.Trigger
     ref={ref}
     className={cn(
-      "flex min-h-11 w-full items-center justify-between rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-left text-sm font-bold text-slate-100 outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10 disabled:cursor-not-allowed disabled:opacity-50",
+      "flex min-h-11 w-full min-w-0 items-center justify-between overflow-hidden rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-left text-sm font-bold text-slate-100 outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:truncate",
       className
     )}
     {...props}
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ChevronDown className="h-4 w-4 text-slate-500" />
+      <ChevronDown className="h-4 w-4 shrink-0 text-slate-500" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ));

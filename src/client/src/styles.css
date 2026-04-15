@@ -8,11 +8,15 @@
   }
 
   html {
+    width: 100%;
+    overflow-x: hidden;
     scroll-behavior: smooth;
   }
 
   body {
     @apply min-h-screen bg-ink text-slate-100 antialiased;
+    width: 100%;
+    overflow-x: hidden;
     background-image:
       linear-gradient(180deg, rgba(7, 16, 31, 0.96), rgba(3, 8, 20, 1)),
       linear-gradient(rgba(217, 173, 74, 0.06) 1px, transparent 1px),
@@ -38,6 +42,11 @@
 
   button {
     @apply transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  #root {
+    min-height: 100vh;
+    width: 100%;
   }
 }
 

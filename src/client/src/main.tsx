@@ -44,7 +44,7 @@ function App() {
     <>
       {toast && (
         <div
-          className={`fixed right-4 top-4 z-50 max-w-sm rounded-lg border px-4 py-3 text-sm shadow-premium ${
+          className={`fixed left-4 right-4 top-4 z-50 rounded-lg border px-4 py-3 text-sm shadow-premium sm:left-auto sm:max-w-sm ${
             toast.type === "error" ? "border-danger/30 bg-danger/15 text-white" : "border-gain/30 bg-panel text-slate-100"
           }`}
         >
