@@ -1,0 +1,43 @@
+{
+  "name": "wilili-dash",
+  "version": "1.0.0",
+  "private": true,
+  "description": "WililiDash: dashboard premium de apostas com NestJS, React TSX, Supabase e Tailwind.",
+  "scripts": {
+    "build": "npm run build:client && tsc -p tsconfig.build.json",
+    "build:client": "vite build",
+    "dev": "npm run start:dev",
+    "start": "node dist/main",
+    "start:dev": "npm run build:client && node --watch -r ts-node/register src/main.ts",
+    "lint": "tsc --noEmit && tsc -p tsconfig.client.json --noEmit"
+  },
+  "dependencies": {
+    "@nestjs/common": "^11.1.19",
+    "@nestjs/config": "^4.0.4",
+    "@nestjs/core": "^11.1.19",
+    "@nestjs/platform-express": "^11.1.19",
+    "@radix-ui/react-select": "^2.2.6",
+    "@supabase/supabase-js": "^2.48.1",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.14.1",
+    "clsx": "^2.1.1",
+    "lucide-react": "^1.8.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.1",
+    "tailwind-merge": "^3.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "@vitejs/plugin-react": "^4.3.4",
+    "autoprefixer": "^10.4.20",
+    "postcss": "^8.4.49",
+    "tailwindcss": "^3.4.17",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.7"
+  }
+}

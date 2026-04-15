@@ -1,0 +1,93 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    letter-spacing: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply min-h-screen bg-ink text-slate-100 antialiased;
+    background-image:
+      linear-gradient(180deg, rgba(7, 16, 31, 0.96), rgba(3, 8, 20, 1)),
+      linear-gradient(rgba(217, 173, 74, 0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(43, 231, 255, 0.04) 1px, transparent 1px);
+    background-size: auto, 72px 72px, 72px 72px;
+  }
+
+  input,
+  select,
+  textarea {
+    @apply w-full rounded-lg border border-white/10 bg-black/25 px-4 py-3 text-sm text-slate-100 outline-none transition;
+  }
+
+  input:focus,
+  select:focus,
+  textarea:focus {
+    @apply border-neon/70 ring-4 ring-neon/10;
+  }
+
+  label {
+    @apply grid gap-2 text-xs font-black uppercase text-gold;
+  }
+
+  button {
+    @apply transition disabled:cursor-not-allowed disabled:opacity-60;
+  }
+}
+
+@layer components {
+  .premium-panel {
+    @apply rounded-lg border border-white/10 bg-panel/80 shadow-premium backdrop-blur;
+  }
+
+  .glass-line {
+    @apply border border-white/10 bg-white/[0.03];
+  }
+
+  .gold-button {
+    @apply rounded-lg bg-gradient-to-br from-gold-soft to-gold px-5 py-3 text-sm font-black uppercase text-ink shadow-glow hover:brightness-110;
+  }
+
+  .ghost-button {
+    @apply rounded-lg border border-white/10 bg-white/[0.04] px-4 py-3 text-sm font-black uppercase text-slate-300 hover:border-gold/40 hover:text-gold-soft;
+  }
+
+  .metric-card {
+    @apply relative min-h-36 overflow-hidden rounded-lg border border-white/10 bg-white/[0.04] p-6;
+  }
+
+  .metric-card::after {
+    content: "";
+    @apply absolute bottom-5 right-5 h-1 w-4/5 rounded-lg opacity-60;
+  }
+
+  .metric-profit::after {
+    @apply bg-gain;
+  }
+
+  .metric-loss::after {
+    @apply bg-danger;
+  }
+
+  .metric-gold::after {
+    @apply bg-gold;
+  }
+
+  .metric-neon::after {
+    @apply bg-neon;
+  }
+
+  .status-chip {
+    @apply inline-flex items-center rounded-lg border px-3 py-2 text-xs font-black uppercase;
+  }
+
+  .table-action {
+    @apply rounded-lg border border-white/10 bg-black/25 px-3 py-2 text-xs font-black uppercase text-slate-200 hover:border-neon/40;
+  }
+}
