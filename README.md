@@ -21,6 +21,7 @@ Voce ja preencheu o `.env`. Ele deve conter:
 PORT=3000
 SUPABASE_URL=https://seu-projeto.supabase.co
 SUPABASE_ANON_KEY=sua-chave-anon
+SUPABASE_SERVICE_ROLE_KEY=sua-service-role
 ```
 
 No Supabase, abra o SQL Editor e execute:
@@ -57,6 +58,7 @@ No painel da Vercel, configure as Environment Variables:
 ```env
 SUPABASE_URL=https://seu-projeto.supabase.co
 SUPABASE_ANON_KEY=sua-chave-anon
+SUPABASE_SERVICE_ROLE_KEY=sua-service-role
 ```
 
 Depois faca um novo deploy. O endpoint `/api/health` deve retornar `supabaseConfigured: true`.
@@ -70,6 +72,8 @@ Depois faca um novo deploy. O endpoint `/api/health` deve retornar `supabaseConf
 - `src/client/src/pages/app/FlowPage.tsx`: registro inteligente WililiFlow
 - `src/client/src/pages/app/OperationsPage.tsx`: tabela completa, filtros e CSV
 - `src/client/src/pages/app/PerformancePage.tsx`: analise de desempenho
+- `src/client/src/pages/app/FriendsPage.tsx`: amigos e lucro liquido por e-mail
+- `src/client/src/pages/app/AdminPage.tsx`: cadastro de casas de aposta para o admin
 - `src/client/src/components/ui`: componentes base estilo shadcn
 - `src/client/src/components/bets`: componentes reutilizaveis de apostas
 - `api/index.ts`: adaptador serverless do Nest para a Vercel
@@ -89,7 +93,10 @@ Depois faca um novo deploy. O endpoint `/api/health` deve retornar `supabaseConf
 - CRUD de apostas protegido por token Supabase
 - Importacao/exportacao CSV
 - Grafico de desempenho e melhor plataforma do periodo
+- Amigos por e-mail com lucro liquido ja descontando perdas
+- Painel admin liberado apenas para `luanbragash23@gmail.com`
+- Casas de aposta pre-selecionadas e expansíveis pelo admin
 
 ## Observacao
 
-Use a chave `anon` no `.env`, nao a service role. O isolamento dos dados acontece pelas policies RLS do arquivo `supabase/schema.sql`.
+Use a chave `anon` no frontend apenas. A `SUPABASE_SERVICE_ROLE_KEY` fica somente no backend e habilita amigos por e-mail e cadastro admin de casas.

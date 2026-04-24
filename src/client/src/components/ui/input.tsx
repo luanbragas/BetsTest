@@ -4,7 +4,7 @@ import { cn } from "../../lib/utils";
 export const Input = forwardRef<HTMLInputElement, InputHTMLAttributes<HTMLInputElement>>(({ className, ...props }, ref) => (
   <input
     ref={ref}
-    className={cn("w-full rounded-lg border border-white/10 bg-white/[0.06] px-4 py-3 text-sm text-slate-100 outline-none transition focus:border-gold/60 focus:ring-4 focus:ring-gold/10", className)}
+    className={cn("w-full rounded-xl px-4 py-3 text-sm text-slate-100 outline-none transition", className)}
     {...props}
   />
 ));

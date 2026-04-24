@@ -38,7 +38,7 @@ export type ToastState = {
 
 export type Period = "day" | "week" | "month" | "custom" | "all";
 
-export type AppPage = "dashboard" | "new" | "flow" | "operations" | "performance";
+export type AppPage = "dashboard" | "new" | "flow" | "operations" | "performance" | "friends" | "admin";
 
 export type FilterState = {
   period: Period;
@@ -49,6 +49,29 @@ export type FilterState = {
 };
 
 export type Totals = {
+  profit: number;
+  loss: number;
+  net: number;
+  hitRate: number;
+  bestPlatform?: string;
+};
+
+export type PlatformSettings = {
+  platforms: string[];
+  isAdmin: boolean;
+  canManageAdmins: boolean;
+};
+
+export type AdminUser = {
+  email: string;
+  isOwner: boolean;
+};
+
+export type FriendSummary = {
+  email: string;
+  name: string;
+  found: boolean;
+  betCount: number;
   profit: number;
   loss: number;
   net: number;

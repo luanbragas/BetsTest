@@ -10,7 +10,7 @@ type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & {
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant = "default", ...props }, ref) => {
   const variants: Record<ButtonVariant, string> = {
     default: "bg-gradient-to-br from-gold-soft to-gold text-ink shadow-glow hover:brightness-110",
-    ghost: "border border-white/10 bg-white/[0.04] text-slate-300 hover:border-gold/40 hover:text-gold-soft",
+    ghost: "border border-white/5 bg-white/[0.045] text-slate-300 backdrop-blur-xl hover:bg-white/[0.07] hover:text-gold-soft",
     outline: "border border-gold/25 bg-transparent text-gold-soft hover:bg-gold/10",
     danger: "border border-danger/30 bg-danger/10 text-danger hover:bg-danger/15"
   };

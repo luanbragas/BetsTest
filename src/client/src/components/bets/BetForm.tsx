@@ -10,14 +10,14 @@ import { Textarea } from "../ui/textarea";
 
 type Props = {
   editingBet?: Bet | null;
+  platforms: string[];
   onCancel?: () => void;
   onSubmit: (bet: BetPayload) => Promise<void>;
 };
 
-const platforms = ["Betano", "PixBet", "Bet365", "Betboom", "Sportingbet", "KTO", "Superbet", "Novibet", "Stake"];
 const categories = ["Geral", "Futebol", "Basquete", "Tenis", "Multipla", "Ao vivo", "Outro"];
 
-export function BetForm({ editingBet, onCancel, onSubmit }: Props) {
+export function BetForm({ editingBet, platforms, onCancel, onSubmit }: Props) {
   const [form, setForm] = useState<BetPayload>(() => emptyBet());
   const [loading, setLoading] = useState(false);
   const result = useMemo(() => getBetResult(form), [form]);
@@ -72,8 +72,8 @@ export function BetForm({ editingBet, onCancel, onSubmit }: Props) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <label><span>Valor investido (R$)</span><Input type="number" min="0" step="0.01" value={form.stake} onChange={(event) => update("stake", Number(event.target.value || 0))} required /></label>
-          <label><span>Valor final (R$)</span><Input type="number" min="0" step="0.01" value={form.returnValue} onChange={(event) => update("returnValue", Number(event.target.value || 0))} required /></label>
+          <label><span>Valor investido (R$)</span><Input inputMode="decimal" type="number" min="0" step="0.01" value={form.stake || ""} onChange={(event) => update("stake", Number(event.target.value || 0))} required /></label>
+          <label><span>Valor final (R$)</span><Input inputMode="decimal" type="number" min="0" step="0.01" value={form.returnValue || ""} onChange={(event) => update("returnValue", Number(event.target.value || 0))} required /></label>
           <label>
             <span>Resultado</span>
             <Select value={form.status} onValueChange={(status) => update("status", status as BetStatus)}>

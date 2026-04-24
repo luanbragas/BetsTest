@@ -4,6 +4,7 @@ import { SupabaseAuthGuard } from "../auth/supabase-auth.guard";
 import { BetDto, FlowDto, ImportDto } from "./dto";
 import { parseNaturalBet } from "./natural-language";
 import { BetsService } from "./bets.service";
+import { SettingsService } from "../settings/settings.service";
 
 type AuthedRequest = {
   accessToken: string;
@@ -12,7 +13,7 @@ type AuthedRequest = {
 @UseGuards(SupabaseAuthGuard)
 @Controller("api/bets")
 export class BetsController {
-  constructor(private readonly bets: BetsService) {}
+  constructor(private readonly bets: BetsService, private readonly settings: SettingsService) {}
 
   @Get()
   list(@Req() request: AuthedRequest, @CurrentUserDecorator() user: CurrentUser) {
@@ -30,8 +31,8 @@ export class BetsController {
   }
 
   @Post("flow")
-  flow(@Req() request: AuthedRequest, @CurrentUserDecorator() user: CurrentUser, @Body() dto: FlowDto) {
-    const parsed = parseNaturalBet(dto.text);
+  async flow(@Req() request: AuthedRequest, @CurrentUserDecorator() user: CurrentUser, @Body() dto: FlowDto) {
+    const parsed = parseNaturalBet(dto.text, await this.settings.listPlatforms());
     return this.bets.create(request.accessToken, user.id, parsed);
   }
 

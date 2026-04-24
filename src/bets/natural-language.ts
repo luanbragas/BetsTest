@@ -1,9 +1,10 @@
 import { BetDto, BetStatus } from "./dto";
+import { DEFAULT_PLATFORMS } from "./platforms";
 
-export function parseNaturalBet(text: string): BetDto {
+export function parseNaturalBet(text: string, knownPlatforms: string[] = DEFAULT_PLATFORMS): BetDto {
   const normalized = removeAccents(text.toLowerCase());
-  const values = extractNumbers(normalized);
-  const platform = extractPlatform(text);
+  const platform = extractPlatform(text, knownPlatforms);
+  const values = extractNumbers(stripPlatformFromText(normalized, platform));
 
   if (!platform) {
     throw new Error('Não consegui identificar a plataforma. Tente: "Ganhei 200 na Bet365 hoje".');
@@ -66,8 +67,7 @@ function extractNumbers(text: string): number[] {
   return matches.map((item) => Number(item.replace(",", ".")));
 }
 
-function extractPlatform(text: string): string {
-  const known = ["Betano", "PixBet", "Bet365", "Betboom", "Sportingbet", "KTO", "Superbet", "Novibet", "Stake"];
+function extractPlatform(text: string, known: string[]): string {
   const lower = removeAccents(text.toLowerCase());
   const found = known.find((platform) => lower.includes(removeAccents(platform.toLowerCase())));
   if (found) return found;
@@ -82,6 +82,12 @@ function extractPlatform(text: string): string {
     .filter((part) => !stopWords.includes(removeAccents(part.toLowerCase())));
 
   return cleanName(parts.slice(0, 3).join(" "));
+}
+
+function stripPlatformFromText(text: string, platform: string): string {
+  if (!platform) return text;
+  const escaped = removeAccents(platform.toLowerCase()).replace(/[.*+?^${}()|[\]\\]/g, "\\$&").replace(/\s+/g, "\\s*");
+  return text.replace(new RegExp(escaped, "gi"), " ");
 }
 
 function extractDate(text: string): Date {

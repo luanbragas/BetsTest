@@ -1,4 +1,4 @@
-import type { AuthState, Bet, BetPayload } from "../types";
+import type { AdminUser, AuthState, Bet, BetPayload, FriendSummary, PlatformSettings } from "../types";
 
 type ApiOptions = {
   method?: string;
@@ -78,4 +78,33 @@ export function createFlowBet(token: string, text: string): Promise<Bet> {
 
 export function importBets(token: string, bets: BetPayload[]): Promise<Bet[]> {
   return api("/api/bets/import", { method: "POST", token, body: { bets } });
+}
+
+export function listPlatforms(token: string): Promise<PlatformSettings> {
+  return api("/api/settings/platforms", { token });
+}
+
+export function createPlatform(token: string, name: string): Promise<{ platform: { name: string } }> {
+  return api("/api/settings/platforms", { method: "POST", token, body: { name } });
+}
+
+export function removePlatform(token: string, name: string): Promise<{ ok: boolean }> {
+  return api(`/api/settings/platforms?name=${encodeURIComponent(name)}`, { method: "DELETE", token });
+}
+
+export function listAdmins(token: string): Promise<{ admins: AdminUser[] }> {
+  return api("/api/settings/admins", { token });
+}
+
+export function addAdmin(token: string, email: string): Promise<{ admin: AdminUser }> {
+  return api("/api/settings/admins", { method: "POST", token, body: { email } });
+}
+
+export function removeAdmin(token: string, email: string): Promise<{ ok: boolean }> {
+  return api(`/api/settings/admins?email=${encodeURIComponent(email)}`, { method: "DELETE", token });
+}
+
+export function listFriendSummaries(token: string, emails: string[]): Promise<FriendSummary[]> {
+  const query = encodeURIComponent(emails.join(","));
+  return api(`/api/friends/summary?emails=${query}`, { token });
 }

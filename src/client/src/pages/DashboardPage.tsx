@@ -1,14 +1,17 @@
 import { ChangeEvent, useEffect, useMemo, useState } from "react";
-import { createBet, createFlowBet, deleteBet, importBets, listBets, updateBet } from "../lib/api";
-import { calculateTotals, defaultFilters, demoBets, filterBets, parseCsv, toCsv, uniqueValues } from "../lib/bets";
+import { addAdmin, createBet, createFlowBet, createPlatform, deleteBet, importBets, listAdmins, listBets, listFriendSummaries, listPlatforms, removeAdmin, removePlatform, updateBet } from "../lib/api";
+import { calculateTotals, defaultFilters, filterBets, parseCsv, toCsv, uniqueValues } from "../lib/bets";
 import { displayName, nextStatus, stripClientFields } from "../lib/format";
+import { defaultPlatforms } from "../lib/platforms";
 import { AppLayout } from "../components/layout/AppLayout";
 import { OverviewPage } from "./app/OverviewPage";
 import { NewBetPage } from "./app/NewBetPage";
 import { FlowPage } from "./app/FlowPage";
 import { OperationsPage } from "./app/OperationsPage";
 import { PerformancePage } from "./app/PerformancePage";
-import type { AppPage, AuthState, Bet, BetPayload, FilterState, ToastState } from "../types";
+import { FriendsPage } from "./app/FriendsPage";
+import { AdminPage } from "./app/AdminPage";
+import type { AdminUser, AppPage, AuthState, Bet, BetPayload, FilterState, FriendSummary, ToastState } from "../types";
 
 type Props = {
   auth: AuthState;
@@ -23,12 +26,18 @@ export function DashboardPage({ auth, onLogout, onToast }: Props) {
   const [editingBet, setEditingBet] = useState<Bet | null>(null);
   const [page, setPage] = useState(1);
   const [filters, setFilters] = useState<FilterState>(() => defaultFilters());
+  const [platformOptions, setPlatformOptions] = useState<string[]>(defaultPlatforms);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [canManageAdmins, setCanManageAdmins] = useState(false);
+  const [admins, setAdmins] = useState<AdminUser[]>([]);
+  const [friendSummaries, setFriendSummaries] = useState<FriendSummary[]>([]);
 
   useEffect(() => {
     void refresh();
+    void refreshPlatforms();
   }, []);
 
-  const platforms = useMemo(() => uniqueValues(bets.map((bet) => bet.platform)), [bets]);
+  const platforms = useMemo(() => uniqueValues([...platformOptions, ...bets.map((bet) => bet.platform)]), [bets, platformOptions]);
   const categories = useMemo(() => uniqueValues(bets.map((bet) => bet.category)), [bets]);
   const filteredBets = useMemo(() => filterBets(bets, filters), [bets, filters]);
   const totals = useMemo(() => calculateTotals(filteredBets), [filteredBets]);
@@ -38,6 +47,23 @@ export function DashboardPage({ auth, onLogout, onToast }: Props) {
     try {
       setBets(await listBets(token));
       setPage(1);
+    } catch (error) {
+      handleError(error);
+    }
+  }
+
+  async function refreshPlatforms() {
+    try {
+      const settings = await listPlatforms(token);
+      setPlatformOptions(settings.platforms.length ? settings.platforms : defaultPlatforms);
+      setIsAdmin(settings.isAdmin);
+      setCanManageAdmins(settings.canManageAdmins);
+      if (settings.canManageAdmins) {
+        const response = await listAdmins(token);
+        setAdmins(response.admins);
+      } else {
+        setAdmins([]);
+      }
     } catch (error) {
       handleError(error);
     }
@@ -110,11 +136,53 @@ export function DashboardPage({ auth, onLogout, onToast }: Props) {
     }
   }
 
-  async function addDemo() {
+  async function addPlatform(name: string) {
     try {
-      const created = await importBets(token, demoBets());
-      setBets((current) => [...created, ...current]);
-      onToast({ message: "Dados de demonstracao adicionados.", type: "success" });
+      const created = await createPlatform(token, name);
+      setPlatformOptions((current) => uniqueValues([...current, created.platform.name]));
+      onToast({ message: "Casa de aposta adicionada.", type: "success" });
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
+  }
+
+  async function deletePlatform(name: string) {
+    try {
+      await removePlatform(token, name);
+      setPlatformOptions((current) => current.filter((item) => item !== name));
+      onToast({ message: "Casa removida da lista pre-selecionada.", type: "success" });
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
+  }
+
+  async function grantAdmin(email: string) {
+    try {
+      const created = await addAdmin(token, email);
+      setAdmins((current) => uniqueAdmins([...current, created.admin]));
+      onToast({ message: "Acesso admin liberado.", type: "success" });
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
+  }
+
+  async function revokeAdmin(email: string) {
+    try {
+      await removeAdmin(token, email);
+      setAdmins((current) => current.filter((item) => item.email !== email));
+      onToast({ message: "Acesso admin removido.", type: "success" });
+    } catch (error) {
+      handleError(error);
+      throw error;
+    }
+  }
+
+  async function refreshFriends(emails: string[]) {
+    try {
+      setFriendSummaries(await listFriendSummaries(token, emails));
     } catch (error) {
       handleError(error);
     }
@@ -158,7 +226,7 @@ export function DashboardPage({ auth, onLogout, onToast }: Props) {
 
   function renderPage() {
     if (activePage === "new") {
-      return <NewBetPage editingBet={editingBet} onCancelEdit={() => setEditingBet(null)} onSubmit={saveBet} />;
+      return <NewBetPage editingBet={editingBet} platforms={platformOptions} onCancelEdit={() => setEditingBet(null)} onSubmit={saveBet} />;
     }
 
     if (activePage === "flow") {
@@ -189,6 +257,24 @@ export function DashboardPage({ auth, onLogout, onToast }: Props) {
       return <PerformancePage bets={filteredBets} filters={filters} totals={totals} platforms={platforms} onFiltersChange={changeFilters} />;
     }
 
+    if (activePage === "friends") {
+      return <FriendsPage storageKey={`wilili.friends.${auth.user.email || "user"}`} summaries={friendSummaries} onRefresh={refreshFriends} />;
+    }
+
+    if (activePage === "admin" && isAdmin) {
+      return (
+        <AdminPage
+          platforms={platformOptions}
+          canManageAdmins={canManageAdmins}
+          admins={admins}
+          onAddAdmin={grantAdmin}
+          onRemoveAdmin={revokeAdmin}
+          onCreatePlatform={addPlatform}
+          onDeletePlatform={deletePlatform}
+        />
+      );
+    }
+
     return (
       <OverviewPage
         userName={userName}
@@ -205,13 +291,14 @@ export function DashboardPage({ auth, onLogout, onToast }: Props) {
   }
 
   return (
-    <AppLayout activePage={activePage} userName={userName} onPageChange={setActivePage} onLogout={onLogout}>
-      <div className="mb-4 flex justify-end">
-        <button className="text-xs font-black uppercase text-slate-500 hover:text-gold" type="button" onClick={addDemo}>
-          Adicionar demo
-        </button>
-      </div>
+    <AppLayout activePage={activePage} userName={userName} isAdmin={isAdmin} onPageChange={setActivePage} onLogout={onLogout}>
       {renderPage()}
     </AppLayout>
   );
+}
+
+function uniqueAdmins(values: AdminUser[]): AdminUser[] {
+  return values
+    .filter((value, index, array) => array.findIndex((item) => item.email === value.email) === index)
+    .sort((a, b) => Number(b.isOwner) - Number(a.isOwner) || a.email.localeCompare(b.email, "pt-BR"));
 }
