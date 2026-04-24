@@ -20,14 +20,61 @@ const categories = ["Geral", "Futebol", "Basquete", "Tenis", "Multipla", "Ao viv
 export function BetForm({ editingBet, platforms, onCancel, onSubmit }: Props) {
   const [form, setForm] = useState<BetPayload>(() => emptyBet());
   const [loading, setLoading] = useState(false);
+  const [stakeInput, setStakeInput] = useState("");
+  const [returnValueInput, setReturnValueInput] = useState("");
   const result = useMemo(() => getBetResult(form), [form]);
 
   useEffect(() => {
-    setForm(editingBet ? stripClientFields(editingBet) : emptyBet());
+    const nextForm = editingBet ? stripClientFields(editingBet) : emptyBet();
+    setForm(nextForm);
+    setStakeInput(editingBet ? String(nextForm.stake) : "");
+    setReturnValueInput(editingBet ? String(nextForm.returnValue) : "");
   }, [editingBet]);
 
   function update<K extends keyof BetPayload>(key: K, value: BetPayload[K]) {
     setForm((current) => ({ ...current, [key]: value }));
+  }
+
+  function sanitizeCurrencyInput(value: string) {
+    const cleaned = value.replace(/[^0-9.,]/g, "");
+    const separatorIndex = cleaned.search(/[.,]/);
+
+    if (separatorIndex === -1) return cleaned;
+
+    const integerPart = cleaned.slice(0, separatorIndex + 1);
+    const decimalPart = cleaned.slice(separatorIndex + 1).replace(/[.,]/g, "");
+    return `${integerPart}${decimalPart}`;
+  }
+
+  function parseCurrencyInput(value: string) {
+    if (value === "") return 0;
+    const normalized = value.replace(",", ".");
+    const parsed = Number(normalized);
+    return Number.isFinite(parsed) ? parsed : 0;
+  }
+
+  function inferStatus(stake: number, returnValue: number): BetStatus {
+    if (returnValue > stake) return "win";
+    if (returnValue < stake) return "loss";
+    return "push";
+  }
+
+  function updateValueField(key: "stake" | "returnValue", rawValue: string) {
+    const value = sanitizeCurrencyInput(rawValue);
+    const parsedValue = parseCurrencyInput(value);
+
+    if (key === "stake") setStakeInput(value);
+    if (key === "returnValue") setReturnValueInput(value);
+
+    setForm((current) => {
+      const next = { ...current, [key]: parsedValue };
+
+      if (current.status !== "open") {
+        next.status = inferStatus(next.stake, next.returnValue);
+      }
+
+      return next;
+    });
   }
 
   async function submit(event: FormEvent) {
@@ -36,6 +83,8 @@ export function BetForm({ editingBet, platforms, onCancel, onSubmit }: Props) {
     try {
       await onSubmit({ ...form, platform: cleanName(form.platform) });
       setForm(emptyBet());
+      setStakeInput("");
+      setReturnValueInput("");
     } finally {
       setLoading(false);
     }
@@ -72,8 +121,8 @@ export function BetForm({ editingBet, platforms, onCancel, onSubmit }: Props) {
         </div>
 
         <div className="grid gap-4 sm:grid-cols-3">
-          <label><span>Valor investido (R$)</span><Input inputMode="decimal" type="number" min="0" step="0.01" value={form.stake || ""} onChange={(event) => update("stake", Number(event.target.value || 0))} required /></label>
-          <label><span>Valor final (R$)</span><Input inputMode="decimal" type="number" min="0" step="0.01" value={form.returnValue || ""} onChange={(event) => update("returnValue", Number(event.target.value || 0))} required /></label>
+          <label><span>Valor investido (R$)</span><Input autoComplete="off" inputMode="decimal" placeholder="0,00" type="text" value={stakeInput} onChange={(event) => updateValueField("stake", event.target.value)} required /></label>
+          <label><span>Valor final (R$)</span><Input autoComplete="off" inputMode="decimal" placeholder="0,00" type="text" value={returnValueInput} onChange={(event) => updateValueField("returnValue", event.target.value)} required /></label>
           <label>
             <span>Resultado</span>
             <Select value={form.status} onValueChange={(status) => update("status", status as BetStatus)}>
